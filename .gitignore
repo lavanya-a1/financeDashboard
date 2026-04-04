@@ -1,0 +1,30 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Build files (if any later)
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Docker (optional but safe)
+*.pid
+*.seed
+*.pid.lock
