@@ -16,8 +16,8 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const records = await getRecords(req.query);
-    res.json(records);
+    const result = await getRecords(req.query);
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -20,6 +20,7 @@ exports.getRecords = async (filters) => {
   let values = [];
   let index = 1;
 
+  // Filters
   if (filters.type) {
     query += ` AND type = $${index++}`;
     values.push(filters.type);
@@ -35,10 +36,21 @@ exports.getRecords = async (filters) => {
     values.push(filters.startDate, filters.endDate);
   }
 
-  query += ` ORDER BY date DESC`;
+  // Pagination
+  const page = parseInt(filters.page) || 1;
+  const limit = parseInt(filters.limit) || 5;
+  const offset = (page - 1) * limit;
+
+  query += ` ORDER BY date DESC LIMIT $${index++} OFFSET $${index++}`;
+  values.push(limit, offset);
 
   const result = await pool.query(query, values);
-  return result.rows;
+
+  return {
+    page,
+    limit,
+    data: result.rows
+  };
 };
 
 // UPDATE
