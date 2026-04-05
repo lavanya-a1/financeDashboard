@@ -11,11 +11,12 @@ const {
 const { authenticate } = require('../middlewares/authMiddleware');
 const { authorize } = require('../middlewares/roleMiddleware');
 const { validate } = require('../middlewares/validateMiddleware');
-const { recordSchema } = require('../validations/recordValidation');
+const { recordSchema, recordUpdateSchema } = require('../validations/recordValidation');
 
 // Admin only
 router.post('/', authenticate, authorize('admin'), validate(recordSchema), create);
-router.patch('/:id', authenticate, authorize('admin'), validate(recordSchema), update);
+router.put('/:id', authenticate, authorize('admin'), validate(recordUpdateSchema), update);
+router.patch('/:id', authenticate, authorize('admin'), validate(recordUpdateSchema), update);
 router.delete('/:id', authenticate, authorize('admin'), remove);
 
 // Analyst + Admin
