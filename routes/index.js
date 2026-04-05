@@ -17,4 +17,8 @@ const dashboardRoutes = require('./dashboardRoutes');
 
 router.use('/dashboard', dashboardRoutes);
 
+const userRoutes = require('./userRoutes');
+
+router.use('/users', userRoutes);
+
 module.exports = router;

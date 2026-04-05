@@ -35,7 +35,8 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) DEFAULT 'viewer'
+  role VARCHAR(50) DEFAULT 'viewer',
+  is_active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE financial_records (
@@ -66,4 +67,11 @@ CREATE TABLE financial_records (
 - `POST /api/auth/login`: Authenticate user and get JWT.
 - `GET /api/records`: Fetch financial records with filtering and pagination.
 - `GET /api/dashboard/summary`: Get overall financial statistics.
-- (See routes for more details...)
+- `GET /api/users` (admin): List all users with roles and status.
+- `PATCH /api/users/:id/role` (admin): Change user role.
+- `PATCH /api/users/:id/status` (admin): Activate/deactivate a user.
+
+## Notes and Assumptions
+- Public registration always creates a `viewer` account by design.
+- Role assignment and user activation status changes are admin-only operations.
+- Login is blocked for users with `is_active = false`.

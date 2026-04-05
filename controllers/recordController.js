@@ -28,6 +28,10 @@ exports.update = async (req, res) => {
     const record = await updateRecord(req.params.id, req.body);
     res.json(record);
   } catch (err) {
+    if (err.message === 'Record not found') {
+      return res.status(404).json({ error: err.message });
+    }
+
     res.status(400).json({ error: err.message });
   }
 };
@@ -37,6 +41,10 @@ exports.remove = async (req, res) => {
     await deleteRecord(req.params.id);
     res.json({ message: 'Record deleted' });
   } catch (err) {
+    if (err.message === 'Record not found') {
+      return res.status(404).json({ error: err.message });
+    }
+
     res.status(400).json({ error: err.message });
   }
 };

@@ -78,17 +78,28 @@ exports.updateRecord = async (id, data) => {
   const query = `
     UPDATE financial_records
     SET ${fields.join(', ')}
-    WHERE id = $${index}
+    WHERE id = $${index} AND is_deleted = FALSE
     RETURNING *`;
 
   const result = await pool.query(query, values);
+  if (!result.rows[0]) {
+    throw new Error('Record not found');
+  }
+
   return result.rows[0];
 };
 
 // DELETE
 exports.deleteRecord = async (id) => {
-  await pool.query(
-    `UPDATE financial_records SET is_deleted = TRUE WHERE id=$1`,
+  const result = await pool.query(
+    `UPDATE financial_records
+     SET is_deleted = TRUE
+     WHERE id = $1 AND is_deleted = FALSE
+     RETURNING id`,
     [id]
   );
+
+  if (!result.rows[0]) {
+    throw new Error('Record not found');
+  }
 };
