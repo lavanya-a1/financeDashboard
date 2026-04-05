@@ -36,6 +36,12 @@ exports.getRecords = async (filters) => {
     values.push(filters.startDate, filters.endDate);
   }
 
+  if (filters.search) {
+    query += ` AND (category ILIKE $${index} OR COALESCE(note, '') ILIKE $${index})`;
+    values.push(`%${filters.search}%`);
+    index++;  
+  }
+
   // Pagination
   const page = parseInt(filters.page) || 1;
   const limit = parseInt(filters.limit) || 5;
