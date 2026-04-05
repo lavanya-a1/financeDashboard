@@ -9,4 +9,12 @@ const authRoutes = require('./authRoutes');
 
 router.use('/auth', authRoutes);
 
+const recordRoutes = require('./recordRoutes');
+
+router.use('/records', recordRoutes);
+
+const dashboardRoutes = require('./dashboardRoutes');
+
+router.use('/dashboard', dashboardRoutes);
+
 module.exports = router;
