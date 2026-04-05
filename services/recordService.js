@@ -16,7 +16,7 @@ exports.createRecord = async (data, userId) => {
 
 // GET ALL (with filters)
 exports.getRecords = async (filters) => {
-  let query = `SELECT * FROM financial_records WHERE 1=1`;
+  let query = `SELECT * FROM financial_records WHERE 1=1 AND is_deleted = FALSE`;
   let values = [];
   let index = 1;
 
@@ -59,22 +59,36 @@ exports.getRecords = async (filters) => {
   };
 };
 
-// UPDATE
+// UPDATE (Partial)
 exports.updateRecord = async (id, data) => {
-  const { amount, type, category, date, note } = data;
+  const fields = [];
+  const values = [];
+  let index = 1;
 
-  const result = await pool.query(
-    `UPDATE financial_records
-     SET amount=$1, type=$2, category=$3, date=$4, note=$5
-     WHERE id=$6
-     RETURNING *`,
-    [amount, type, category, date, note, id]
-  );
+  for (const [key, value] of Object.entries(data)) {
+    if (['amount', 'type', 'category', 'date', 'note'].includes(key)) {
+      fields.push(`${key} = $${index++}`);
+      values.push(value);
+    }
+  }
 
+  if (fields.length === 0) return null;
+
+  values.push(id);
+  const query = `
+    UPDATE financial_records
+    SET ${fields.join(', ')}
+    WHERE id = $${index}
+    RETURNING *`;
+
+  const result = await pool.query(query, values);
   return result.rows[0];
 };
 
 // DELETE
 exports.deleteRecord = async (id) => {
-  await pool.query(`DELETE FROM financial_records WHERE id=$1`, [id]);
+  await pool.query(
+    `UPDATE financial_records SET is_deleted = TRUE WHERE id=$1`,
+    [id]
+  );
 };

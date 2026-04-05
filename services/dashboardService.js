@@ -7,6 +7,7 @@ exports.getSummary = async () => {
       SUM(CASE WHEN type='income' THEN amount ELSE 0 END) AS total_income,
       SUM(CASE WHEN type='expense' THEN amount ELSE 0 END) AS total_expense
     FROM financial_records
+    WHERE is_deleted = FALSE
   `);
 
   const data = result.rows[0];
@@ -25,6 +26,7 @@ exports.getCategoryBreakdown = async () => {
   const result = await pool.query(`
     SELECT category, SUM(amount) AS total
     FROM financial_records
+    WHERE is_deleted = FALSE
     GROUP BY category
     ORDER BY total DESC
   `);
@@ -40,6 +42,7 @@ exports.getMonthlyTrends = async () => {
       SUM(CASE WHEN type='income' THEN amount ELSE 0 END) AS income,
       SUM(CASE WHEN type='expense' THEN amount ELSE 0 END) AS expense
     FROM financial_records
+    WHERE is_deleted = FALSE
     GROUP BY month
     ORDER BY month
   `);
